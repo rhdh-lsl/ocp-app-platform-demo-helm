@@ -7,8 +7,6 @@ extensions:
     version: 1.95.3
   - id: anthropic.claude-code
     version: 2.1.109
-  - id: continue.continue
-    version: 1.2.14
   - id: RooVeterinaryInc.roo-cline
     version: 3.52.1
   - id: redhat.java
