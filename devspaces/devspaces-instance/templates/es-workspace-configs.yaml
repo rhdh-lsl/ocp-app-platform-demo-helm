@@ -1,61 +1,6 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: continue-config
-  namespace: {{ include "devspaces-instance.namespace" . }}
-  annotations:
-    {{- include "devspaces-instance.argocd-syncwave" . | nindent 4 }}
-spec:
-  refreshInterval: 5m
-  secretStoreRef:
-    name: vault-secret-store
-    kind: ClusterSecretStore
-  target:
-    name: continue-config
-    creationPolicy: Owner
-    template:
-      metadata:
-        labels:
-          app.kubernetes.io/part-of: che.eclipse.org
-          app.kubernetes.io/component: workspaces-config
-        annotations:
-          controller.devfile.io/mount-as: subpath
-          controller.devfile.io/mount-path: /home/user/.continue-config/
-      data:
-        config.yaml: |
-          name: Continue Config
-          version: 0.0.1
-          models:
-            - name: LiteMaaS (claude-opus-4-6)
-              provider: vllm
-              model: claude-opus-4-6
-              apiKey: "{{ printf "{{ .api_key }}" }}"
-              apiBase: "{{ printf "{{ .base_url }}" }}"
-              roles:
-                - chat
-          mcpServers:
-            - name: rhdh-mcp
-              url: http://backstage-developer-hub.rhdh.svc.cluster.local/api/mcp-actions/v1/sse
-              requestOptions:
-                headers:
-                  Authorization: {{ printf "\"Bearer {{ .mcp_secret }}\"" }}
-  data:
-    - secretKey: api_key
-      remoteRef:
-        key: secrets/litellm/credentials
-        property: api_key
-    - secretKey: base_url
-      remoteRef:
-        key: secrets/litellm/credentials
-        property: base_url
-    - secretKey: mcp_secret
-      remoteRef:
-        key: secrets/rhdh/mcp-secret
-        property: value
----
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
   name: roo-config
   namespace: {{ include "devspaces-instance.namespace" . }}
   annotations:
@@ -85,7 +30,7 @@ spec:
                 "default": {
                   "openAiBaseUrl": "{{ printf "{{ .base_url }}" }}",
                   "openAiApiKey": "{{ printf "{{ .api_key }}" }}",
-                  "openAiModelId": "claude-opus-4-6",
+                  "openAiModelId": "qwen3-235b",
                   "openAiCustomModelInfo": {
                     "maxTokens": -1,
                     "contextWindow": 262144,
@@ -260,7 +205,7 @@ spec:
         # See: https://docs.vllm.ai/en/stable/serving/integrations/claude_code/
         ANTHROPIC_BASE_URL: {{ printf "\"{{ .base_url | trimSuffix `/v1` }}\"" }}
         ANTHROPIC_API_KEY: "{{ printf "{{ .api_key }}" }}"
-        ANTHROPIC_MODEL: "claude-opus-4-6"
+        ANTHROPIC_MODEL: "qwen3-235b"
         DEV_KAFKA_PASSWORD: "{{ printf "{{ .kafka_password }}" }}"
   data:
     - secretKey: api_key
