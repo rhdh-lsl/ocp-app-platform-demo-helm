@@ -16,9 +16,11 @@ kiali:
 
 istio:
   namespace: istio-system
-  discoverySelector:
-    matchLabels:
-      istio.io/dataplane-mode: ambient
+  discoverySelectors:
+    - matchLabels:
+        istio.io/dataplane-mode: ambient
+    - matchLabels:
+        gateway-api: "true"
 
 istioCni:
   namespace: istio-cni
