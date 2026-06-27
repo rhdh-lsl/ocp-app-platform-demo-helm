@@ -19,6 +19,8 @@ spec:
     metadata:
       labels:
         app: parasol-db
+      annotations:
+        traffic.istio.io/excludeInboundPorts: "5432"
     spec:
       securityContext:
         runAsNonRoot: true
