@@ -48,6 +48,9 @@ Vault is the single source of truth for secrets. The flow works like this:
 > [!IMPORTANT]
 > The Vault setup Job pre-populates secrets using values passed through Helm. In a production setup you'd use a proper secret injection workflow. Here, the tradeoff is acceptable because the passwords are generated once by Ansible and the cluster is ephemeral.
 
+> [!NOTE]
+> `kv/secrets/litellm/credentials` defaults to a non-functional placeholder (`vault/values.yaml` → `secrets.litellm`) since no LLM gateway is deployed by default — this just keeps dependent `ExternalSecret`s from blocking their Argo CD sync wave. To wire up a real OpenAI-compatible endpoint for Developer Hub's AI-assistant features, see "Connecting a real LLM gateway" in the [Ansible deployer's README](https://github.com/rhdh-lsl/adv-app-platform-demo-automation#connecting-a-real-llm-gateway-optional).
+
 ### Vault paths
 
 | Path | Written by | Consumed by |
@@ -66,6 +69,7 @@ Vault is the single source of truth for secrets. The flow works like this:
 | `kv/secrets/rhdh/kubernetes-sa-token` | RHDH SA token Job | RHDH (ExternalSecret) |
 | `kv/secrets/gitlab/devspaces-oauth` | GitLab init Job | DevSpaces (ExternalSecret) |
 | `kv/secrets/common/password` | Vault setup Job | — |
+| `kv/secrets/litellm/credentials` | Vault setup Job | RHDH, DevSpaces (ExternalSecret) — AI-assistant features |
 
 ## Developer authentication
 
